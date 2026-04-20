@@ -6,7 +6,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
+/* removed stray closing brace */
 
 html {
   scroll-behavior: smooth;
@@ -50,7 +50,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5rem;
 }
 
 .title-logo {
@@ -137,9 +136,12 @@ body {
 }
 
 .title-prompt-box {
+  position: absolute;
+  bottom: -4rem;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: center;
-  position: relative;
 }
 
 .title-prompt {
@@ -222,14 +224,21 @@ body {
 
 /* Transitions */
 .title-fade-leave-active {
-  transition: opacity 1.2s ease;
+  transition: opacity 4s ease;
 }
 .title-fade-leave-to {
   opacity: 0;
 }
 
+.prompt-fade-leave-active {
+  transition: opacity 0.8s ease;
+}
+.prompt-fade-leave-to {
+  opacity: 0;
+}
+
 .portfolio-fade-enter-active {
-  transition: opacity 1.5s ease 0.5s;
+  transition: opacity 2s ease 2s;
 }
 .portfolio-fade-enter-from {
   opacity: 0;
@@ -248,8 +257,24 @@ body {
 .portfolio-bg {
   position: fixed;
   inset: 0;
-  background: url('/darksouls/darksouls_watch_caste.png') center center / cover no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   z-index: 0;
+}
+
+.portfolio-bg-back {
+  z-index: 0;
+}
+
+.portfolio-bg-front {
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 2.5s ease-in-out;
+}
+
+.portfolio-bg-front.bg-visible {
+  opacity: 1;
 }
 
 .portfolio-overlay {
@@ -317,70 +342,169 @@ body {
 .ds-panel {
   position: relative;
   z-index: 10;
-  min-height: 100vh;
+    min-height: 50vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
   padding: 4rem 1rem 2rem;
 }
 
-.ds-panel-inner {
+/* ---- Ornate frame (outer border) ---- */
+/* ---- Ornate frame (outer border) ---- */
+.ds-panel-frame {
   width: 100%;
-  max-width: 950px;
-  background: linear-gradient(135deg,
-    rgba(12, 10, 8, 0.72) 0%,
-    rgba(18, 16, 13, 0.68) 50%,
-    rgba(12, 10, 8, 0.72) 100%
-  );
-  border: 1px solid rgba(138, 125, 107, 0.2);
-  border-radius: 2px;
-  padding: 0;
-  backdrop-filter: blur(10px);
-  box-shadow:
-    0 0 60px rgba(0,0,0,0.5),
-    inset 0 1px 0 rgba(200,190,170,0.05);
+  max-width: 1075px;
   position: relative;
-  overflow: hidden;
+  padding: 12px;
+  background: linear-gradient(135deg,
+    rgba(90, 78, 56, 0.03) 0%,
+    rgba(70, 60, 42, 0.02) 30%,
+    rgba(55, 48, 34, 0.01) 60%,
+    rgba(90, 78, 56, 0.03) 100%
+  );
+  border: 2px solid rgba(100, 88, 62, 0.05);
+  border-radius: 3px;
+  box-shadow:
+    0 0 80px rgba(0,0,0,0.07),
+    inset 0 0 30px rgba(0,0,0,0.03);
+  backdrop-filter: blur(10px);
 }
 
-/* Top golden accent line */
-.ds-panel-inner::before {
+/* Inner border line (double frame effect) */
+.ds-panel-frame::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 5%;
-  right: 5%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200, 164, 78, 0.5), transparent);
+  inset: 4px;
+  border: 1px solid rgba(100, 88, 62, 0.35);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* ===================================================
-   PANEL NAV (tabs like DS3 system menu)
-   =================================================== */
+/* Subtle worn texture overlay */
+.ds-panel-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(0,0,0,0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0,0,0,0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.15) 0%, transparent 70%);
+  pointer-events: none;
+  border-radius: 3px;
+}
+
+/* Corner decorations */
+.frame-corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  z-index: 2;
+}
+.frame-corner::before,
+.frame-corner::after {
+  content: '';
+  position: absolute;
+  background: rgba(120, 105, 75, 0.5);
+}
+.frame-tl { top: 0; left: 0; }
+.frame-tl::before { top: 0; left: 0; width: 20px; height: 2px; }
+.frame-tl::after { top: 0; left: 0; width: 2px; height: 20px; }
+.frame-tr { top: 0; right: 0; }
+.frame-tr::before { top: 0; right: 0; width: 20px; height: 2px; }
+.frame-tr::after { top: 0; right: 0; width: 2px; height: 20px; }
+.frame-bl { bottom: 0; left: 0; }
+.frame-bl::before { bottom: 0; left: 0; width: 20px; height: 2px; }
+.frame-bl::after { bottom: 0; left: 0; width: 2px; height: 20px; }
+.frame-br { bottom: 0; right: 0; }
+.frame-br::before { bottom: 0; right: 0; width: 20px; height: 2px; }
+.frame-br::after { bottom: 0; right: 0; width: 2px; height: 20px; }
+
+/* ---- Inner panel ---- */
+/* ---- Inner panel ---- */
+.ds-panel-inner {
+  position: relative;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 30% 70%, rgba(35,30,25,0.55) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 30%, rgba(30,26,22,0.50) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(25,22,18,0.55) 0%, rgba(20,18,15,0.50) 100%);
+  border-radius: 1px;
+  overflow: hidden;
+    min-height: 350px;
+    font-size: 0.7rem;
+}
+/* ---- Category title (top-left, like "Graphics") ---- */
+/* ---- Category title (top-left, like "Graphics") ---- */
+.ds-category-title {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+    font-size: 1.2rem;
+  font-weight: 400;
+  color: #a89a82;
+    padding: 0.75rem 1.125rem 0.225rem;
+  letter-spacing: 0.05em;
+}
+/* ---- Tab row with LB / RB ---- */
+/* ---- Tab row with LB / RB ---- */
+.ds-tab-row {
+  display: flex;
+  align-items: center;
+  padding: 0 1.6rem;
+  gap: 0.6rem;
+
+}
+
+
+.ds-tab-arrow {
+  font-family: 'Cinzel', 'Georgia', serif;
+  font-size: 1.05rem;
+  color: #7a6f60;
+  cursor: pointer;
+  padding: 0.6rem 0.45rem;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ds-tab-arrow:hover {
+  color: #c8b89a;
+}
 
 .ds-panel-nav {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0;
-  padding: 1rem 1rem 0;
-  border-bottom: 1px solid rgba(138, 125, 107, 0.15);
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  gap: 0.2rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  max-width: 100%;
+  min-width: 0;
+  white-space: nowrap;
 }
 
+.ds-panel-nav::-webkit-scrollbar {
+  height: 6px;
+  background: transparent;
+}
+
+/* ---- Tabs ---- */
 .ds-panel-tab {
   font-family: 'Cinzel', 'Georgia', serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.15em;
+    font-size: 0.7rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #6a6358;
+  color: #5a5347;
   background: none;
   border: none;
-  padding: 0.7rem 1rem;
+    padding: 0.4125rem 0.525rem;
   cursor: pointer;
-  transition: color 0.3s ease, border-color 0.3s ease;
+  transition: color 0.2s ease;
   position: relative;
-  border-bottom: 2px solid transparent;
   white-space: nowrap;
+  /* Suppression de l'ellipsis, onglets non coupés */
+  border-bottom: 2px solid transparent;
+}
 }
 
 .ds-panel-tab:hover {
@@ -389,200 +513,187 @@ body {
 
 .ds-panel-tab.active {
   color: #e8dcc8;
-  border-bottom-color: #c8a44e;
 }
 
-.ds-panel-tab.active::after {
+/* Active tab: small box highlight like DS3 icon selection */
+.ds-panel-tab.active::before {
   content: '';
   position: absolute;
-  bottom: -1px;
-  left: 20%;
-  right: 20%;
-  height: 1px;
-  background: rgba(200, 164, 78, 0.5);
-  filter: blur(3px);
+  inset: 2px 4px;
+  border: 1px solid rgba(200, 175, 100, 0.25);
+  border-radius: 1px;
+  background: rgba(200, 175, 100, 0.06);
 }
 
-/* ===================================================
-   PANEL DIVIDER
-   =================================================== */
-
+/* ---- Panel divider ---- */
 .ds-panel-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(138, 125, 107, 0.25), transparent);
-  margin: 0;
+  background: linear-gradient(90deg,
+    rgba(80,70,50,0.1) 0%,
+    rgba(120,105,75,0.4) 20%,
+    rgba(120,105,75,0.5) 50%,
+    rgba(120,105,75,0.4) 80%,
+    rgba(80,70,50,0.1) 100%
+  );
+  margin: 0.3rem 1rem 0;
 }
 
-.ds-panel-divider-thin {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(138, 125, 107, 0.15), transparent);
-  margin: 1rem 0;
-}
-
-/* ===================================================
-   PANEL CONTENT
-   =================================================== */
+/* ---- Panel content ---- */
+/* ---- Panel content ---- */
 
 .ds-panel-content {
-  padding: 1.5rem 2rem 1.5rem;
-  min-height: 300px;
-  animation: panelFadeIn 0.3s ease;
+  padding: 0.8rem 2.5rem 1rem;
+  min-height: 320px;
+  animation: panelFadeIn 0.25s ease;
 }
 
 @keyframes panelFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Hero info (About section) */
-.ds-hero-info {
-  text-align: center;
-  padding: 1rem 0;
-}
+/* ---- Content rows (like DS3 settings rows) ---- */
+/* ---- Content rows (like DS3 settings rows) ---- */
 
-.hero-title {
-  font-family: 'Cinzel', 'Georgia', serif;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #e8dcc8;
-  letter-spacing: 0.12em;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-}
-
-.hero-subtitle {
-  font-size: 1.15rem;
-  color: #a89a82;
-  font-weight: 400;
-}
-
-.hero-search {
-  font-size: 1rem;
-  color: #c8a44e;
-  font-style: italic;
-  margin-top: 0.3rem;
-  font-weight: 500;
-}
-
-.ds-section-content .ds-item-text {
-  text-align: center;
-}
-
-/* ===================================================
-   LIST ITEMS (inside panel)
-   =================================================== */
-
-.ds-list-item {
+.ds-content-row {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 0.9rem 1rem;
-  margin-bottom: 0.4rem;
-  border-left: 2px solid rgba(138, 125, 107, 0.15);
-  background: rgba(255,255,255,0.01);
-  transition: all 0.25s ease;
-  cursor: default;
+  align-items: baseline;
+  justify-content: space-between;
+    padding: 0.6rem 0.5rem;
+    gap: 1.5rem;
+  transition: background 0.2s ease;
 }
 
-.ds-list-item:hover {
-  border-left-color: #c8a44e;
-  background: rgba(200, 164, 78, 0.04);
-  padding-left: 1.3rem;
+.ds-content-row-clickable {
+  cursor: pointer;
+    padding: 0.35rem 0.3rem;
+  position: relative;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
-.ds-list-item-selected {
-  border-left-color: #c8a44e !important;
-  background: rgba(200, 164, 78, 0.08) !important;
-  padding-left: 1.3rem;
+.ds-content-row-clickable:hover {
+  background: rgba(200, 175, 100, 0.03);
 }
 
-.ds-list-item-selected .ds-item-title {
-  color: #c8a44e;
+/* DS3 orange selection border */
+.ds-row-selected {
+  outline: 2px solid rgba(200, 150, 50, 0.7);
+  outline-offset: 2px;
+  background: rgba(200, 150, 50, 0.06) !important;
 }
 
-.ds-icon {
-  font-size: 1.5rem;
+.ds-row-icon {
+  font-size: 1.3rem;
   flex-shrink: 0;
-  filter: grayscale(0.3);
-  transition: filter 0.3s ease;
+  margin-bottom: 0.1rem;
 }
 
-.ds-list-item:hover .ds-icon {
-  filter: grayscale(0);
-}
-
-.ds-item-content {
+.ds-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
   flex: 1;
 }
 
-.ds-item-title {
-  font-family: 'Cinzel', 'Georgia', serif;
+
+.ds-row-label {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 1.575rem;
+  color: #c8b89a;
+  font-weight: 500;
+}
+
+
+.ds-row-value {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
   font-size: 1rem;
   color: #e8dcc8;
-  margin-bottom: 0.2rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  text-align: right;
 }
 
-.ds-item-text {
-  font-size: 0.95rem;
-  color: #a89a82;
-  margin: 0.1rem 0;
-  line-height: 1.55;
+
+.ds-row-value-sub {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 1.1rem;
+  color: #8a7d6b;
+  line-height: 1.5;
 }
 
-/* Tools / simple list */
-.ds-list-simple {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  justify-content: center;
-  padding: 0.5rem 0;
+.ds-content-row-desc {
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.ds-tool-item {
-  padding: 0.5rem 1.3rem;
-  border: 1px solid rgba(138, 125, 107, 0.2);
+.ds-row-desc {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 1.4rem;
+  color: #8a7d6b;
+  line-height: 1.6;
   text-align: center;
-  transition: all 0.25s ease;
-  cursor: default;
+  padding: 0 1rem;
 }
 
-.ds-tool-item:hover {
-  border-color: #c8a44e;
-  background: rgba(200, 164, 78, 0.05);
+/* Thin separator lines between rows (like DS3) */
+.ds-content-line {
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(80,70,50,0.05) 0%,
+    rgba(120,105,75,0.3) 15%,
+    rgba(120,105,75,0.35) 50%,
+    rgba(120,105,75,0.3) 85%,
+    rgba(80,70,50,0.05) 100%
+  );
+  margin: 0 0.5rem;
 }
 
-.ds-tool-item-selected {
-  border-color: #c8a44e !important;
-  background: rgba(200, 164, 78, 0.08) !important;
+/* ---- DS3-style settings rows ---- */
+.ds-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.5rem;
 }
 
-.ds-tool-text {
-  font-family: 'Cinzel', 'Georgia', serif;
-  font-size: 0.85rem;
-  color: #c8b89a;
-  letter-spacing: 0.08em;
+.ds-setting-value {
+  cursor: pointer;
+  padding: 0.68rem 4.06rem;
+  border: 1px solid rgba(160, 130, 60, 0.5);
+  color: #e8dcc8;
+  transition: all 0.2s ease;
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 1.5rem;
+  text-align: center;
+  min-width: 270px;
 }
 
-/* ===================================================
-   PANEL BOTTOM BAR
-   =================================================== */
+.ds-setting-value:hover {
+  border-color: rgba(200, 150, 50, 0.8);
+  background: rgba(200, 150, 50, 0.08);
+  color: #c8a44e;
+}
 
+/* ---- Bottom help bar ---- */
 .ds-panel-bottom {
   display: flex;
-  justify-content: center;
-  gap: 2.5rem;
-  padding: 0.8rem 1.5rem;
-  border-top: 1px solid rgba(138, 125, 107, 0.12);
-  background: rgba(0,0,0,0.15);
+  justify-content: flex-start;
+  gap: 2rem;
+  padding: 0.7rem 1.5rem;
+  border-top: 1px solid rgba(100, 88, 62, 0.2);
+  background: rgba(0,0,0,0.12);
 }
 
 .ds-help-item {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: #5a5347;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
+}
+
+.ds-key {
+  color: #7a6f60;
+  font-weight: 600;
+  margin-right: 0.3rem;
 }
 
 /* ===================================================
@@ -606,7 +717,7 @@ body {
 
 .ds-footer p {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.8rem;
+  font-size: 1.5rem;
   color: #4a4540;
   letter-spacing: 0.08em;
 }
@@ -686,7 +797,7 @@ a:hover {
   .health-bar-name {
     top: 0.5rem;
     right: 0.5rem;
-    font-size: 0.7rem;
+    font-size: 2.2rem;
   }
 
   .health-bar-img {
